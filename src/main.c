@@ -218,7 +218,9 @@ int main(int argc, char **argv)
         .wasClicked = (char[]) {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         .isClicked = (char[]) {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
         .mouseOver = (char[]) {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-        .clickTracker = (int[]) {0, 0, 0, 1, 0, 0, 0, 3, 0, 0, 0, 3, 0, -1},
+        .clickTracker = (int[]) {
+            0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, mainBoard.tick == 0, 0, -1
+        },
         .tileType = 0
     };
 
@@ -279,26 +281,6 @@ int main(int argc, char **argv)
         if(boardMenu.scale < 1.0f)boardMenu.scale = 1.0f;
         if(boardMenu.scale > 4.0f)boardMenu.scale = 4.0f;
         boardMenu.scale *= 1.5;
-
-        //updates mouse over
-        for(int i = 0; i < boardMenu.elemNum; i++)
-            boardMenu.mouseOver[i] = CheckCollisionPointRec(
-                GetMousePosition(),
-                (Rectangle) {
-                    boardMenu.position.x +
-                    boardMenu.elemHitboxes[i].x * boardMenu.scale,
-                    boardMenu.position.y +
-                    boardMenu.elemHitboxes[i].y * boardMenu.scale,
-                    boardMenu.elemHitboxes[i].width * boardMenu.scale,
-                    boardMenu.elemHitboxes[i].height * boardMenu.scale
-                }
-            );
-
-        //update menu hints
-        for(int i = 0; i < 5; i++)
-            if(boardMenu.mouseOver[i])menuHintNum = i + 17;
-        for(int i = 7; i < 13; i++)
-            if(boardMenu.mouseOver[i])menuHintNum = i + 15;
 
         //handels when the mouse is pressed down
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -498,6 +480,7 @@ int main(int argc, char **argv)
                     //resets tick to 0
                     mainBoard.tick = 0;
 
+                    boardMenu.clickTracker[7] = 0;
                     boardMenu.clickTracker[11] = 1;
 
                     //resets prev power
@@ -625,6 +608,26 @@ int main(int argc, char **argv)
                     && (fabsf(GetDragY(worldCamDrag)) < 4.0f));
             }
         }
+
+        //updates mouse over
+        for(int i = 0; i < boardMenu.elemNum; i++)
+            boardMenu.mouseOver[i] = CheckCollisionPointRec(
+                GetMousePosition(),
+                (Rectangle) {
+                    boardMenu.position.x +
+                    boardMenu.elemHitboxes[i].x * boardMenu.scale,
+                    boardMenu.position.y +
+                    boardMenu.elemHitboxes[i].y * boardMenu.scale,
+                    boardMenu.elemHitboxes[i].width * boardMenu.scale,
+                    boardMenu.elemHitboxes[i].height * boardMenu.scale
+                }
+            );
+
+        //update menu hints
+        for(int i = 0; i < 5; i++)
+            if(boardMenu.mouseOver[i])menuHintNum = i + 17;
+        for(int i = 7; i < 13; i++)
+            if(boardMenu.mouseOver[i])menuHintNum = i + 15;
 
         //changes menu width based on if the menu is minimized
         boardMenu.menuBounds.width = 
@@ -763,7 +766,6 @@ int main(int argc, char **argv)
                             (boardMenu.clickTracker[6] != -1)
                         )
                         {
-
                             //unselects type if type already selected
                             if(
                                 tileTypeArray[boardMenu.clickTracker[6]] ==
@@ -842,11 +844,13 @@ int main(int argc, char **argv)
                     if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT))
                     {
                         if(boardMenu.clickTracker[13] == i)
+                        {
                             mainBoard.input ^= 1 << i;
 
-                        //updates the power of the logic board
-                        UpdatePowerLogicBoard(&mainBoard);
-                        boardMenu.clickTracker[7] = 0;
+                            //updates the power of the logic board
+                            UpdatePowerLogicBoard(&mainBoard);
+                            boardMenu.clickTracker[7] = 0;
+                        }
                     }
                 }
             }
@@ -891,22 +895,8 @@ int main(int argc, char **argv)
             }
         }
 
-        DrawText(
-            menuHints[menuHintNum],
-            2 * boardMenu.scale,
-            2 * boardMenu.scale,
-            7 * boardMenu.scale,
-            BLACK
-        );
-
         BeginMode2D(worldCamera);//sets camera to worldCamera
         /* NOTE: WORLD DRAWING SECTION */
-
-        //draws outline around logic board
-        DrawRectangle(
-            -4, -4, (mainBoard.w << 3) + 8, (mainBoard.h << 3) + 8,
-            (Color) {0x26, 0x26, 0x28, 0xff}
-        );
 
         //draws the logic board to the screen
         DisplayLogicBoard(mainBoard);
@@ -981,6 +971,71 @@ int main(int argc, char **argv)
         EndMode2D();//stops using world camera
         /* NOTE:  STATIC DRAWING SECTION (HUD, UI, etc...)*/
 
+        //draws the menu hint and the box arround the menu hint
+        if(menuHintNum != 0)
+        {
+
+            Vector2 hintSize = MeasureTextEx(
+                GetFontDefault(),
+                menuHints[menuHintNum],
+                7.0f * boardMenu.scale,
+                (boardMenu.scale * 7.0f) / 10.0f
+            );
+
+            DrawRectangle(
+                0, 0,
+                hintSize.x + 8 * boardMenu.scale,
+                hintSize.y + 8 * boardMenu.scale,
+                (Color) {0x26, 0x26, 0x28, 0xff}
+            );
+
+            DrawRectangle(
+                2 * boardMenu.scale, 2 * boardMenu.scale,
+                hintSize.x + 4 * boardMenu.scale,
+                hintSize.y + 4 * boardMenu.scale,
+                (Color) {0x78, 0x79, 0x7d, 0xff}
+            );
+
+            DrawRectangle(
+                boardMenu.scale, 2 * boardMenu.scale,
+                boardMenu.scale,
+                hintSize.y + 4 * boardMenu.scale,
+                (Color) {0x1b, 0x1b, 0x1d, 0xff}
+            );
+
+            DrawRectangle(
+                2 * boardMenu.scale, boardMenu.scale,
+                hintSize.x + 4 * boardMenu.scale,
+                boardMenu.scale,
+                (Color) {0x1b, 0x1b, 0x1d, 0xff}
+            );
+
+            DrawRectangle(
+                hintSize.x + 6 * boardMenu.scale,
+                2 * boardMenu.scale,
+                boardMenu.scale,
+                hintSize.y + 4 * boardMenu.scale,
+                (Color) {0x3c, 0x3d, 0x3f, 0xff}
+            );
+
+            DrawRectangle(
+                2 * boardMenu.scale,
+                hintSize.y + 6 * boardMenu.scale,
+                hintSize.x + 4 * boardMenu.scale,
+                boardMenu.scale,
+                (Color) {0x3c, 0x3d, 0x3f, 0xff}
+            );
+
+            DrawText(
+                menuHints[menuHintNum],
+                4.0f * boardMenu.scale,
+                4.0f * boardMenu.scale,
+                7.0f * boardMenu.scale,
+                IsMouseButtonDown(MOUSE_BUTTON_LEFT) ?
+                    (Color) {0xc6, 0xa1, 0x53, 0xff} :
+                    (Color) {0x4e, 0x40, 0x28, 0xff}
+            );
+        }
         //draws the menu to the screen
 
         //loops over the elements in the menu
@@ -994,9 +1049,9 @@ int main(int argc, char **argv)
 
                     //if some of the elements are clicked, the source is moved
                     boardMenu.elemSrcs[i].y + 
-                        ((((i < 5)? 42.0f : 0.0f) +
-                        (((i < 13) && (i > 6)) ? 12.0f : 0.0f)) *
-                        ((float)(boardMenu.clickTracker[i] & 1))),
+                    ((((i < 5)? 42.0f : 0.0f) +
+                    (((i < 13) && (i > 6)) ? 12.0f : 0.0f)) *
+                    ((float)(boardMenu.clickTracker[i] & 1))),
 
                     boardMenu.elemSrcs[i].width,
                     boardMenu.elemSrcs[i].height,

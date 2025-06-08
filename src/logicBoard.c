@@ -149,12 +149,38 @@ void DisplayLogicBoard(LogicBoard lb)
 {
     if(lb.board == NULL) return;
 
+    //draws outline around logic board
+    DrawRectangle(
+        -2, -2, (lb.w << 3) + 4, (lb.h << 3) + 4,
+        (Color) {0x26, 0x26, 0x28, 0xff}
+    );
+
+    DrawRectangle(-1, 0, 1, lb.h << 3, (Color) {0x1b, 0x1b, 0x1d, 0xff});
+    DrawRectangle(0, -1, lb.w << 3, 1, (Color) {0x1b, 0x1b, 0x1d, 0xff});
+    DrawRectangle(lb.w << 3, 0, 1, lb.h << 3, (Color) {0x3c, 0x3d, 0x3f, 0xff});
+    DrawRectangle(0, lb.h << 3, lb.w << 3, 1, (Color) {0x3c, 0x3d, 0x3f, 0xff});
+
+    for(int i = 0; i < lb.h; i++)
+    {
+        for(int j = 0; j < lb.w; j++)
+            DrawTexture(baseTile, j << 3, i << 3, WHITE);//draws base tiles
+    }
+
+    DrawRectangle(0, 0, 1, lb.h << 3, (Color) {0x78, 0x79, 0x7d, 0xff});
+    DrawRectangle(0, 0, lb.w << 3, 1, (Color) {0x78, 0x79, 0x7d, 0xff});
+
+    DrawRectangle(
+        (lb.w << 3) - 1, 0, 1, lb.h << 3, (Color) {0x78, 0x79, 0x7d, 0xff}
+    );
+
+    DrawRectangle(
+        0, (lb.h << 3) - 1, lb.w << 3, 1, (Color) {0x78, 0x79, 0x7d, 0xff}
+    );
+
     for(int i = 0; i < lb.h; i++)
     {
         for(int j = 0; j < lb.w; j++)
         {
-            DrawTexture(baseTile, j << 3, i << 3, WHITE);//draws base tiles
-
             LogicTile curTile = lb.board[j + i * lb.w];//gets current tile
 
             int8_t shouldDraw = 0;
@@ -406,11 +432,11 @@ LogicBoard LoadLogicBoard(const char *path)
             fseek(filePtr, 14, SEEK_SET);
             fread(&retVal.h, 4, 1, filePtr);
 
-            tempLtVals = (int8_t*) malloc(retVal.w * retVal.h << 1);
+            tempLtVals = (int8_t*) malloc(retVal.w * retVal.h * 3);
 
             fseek(filePtr, 18, SEEK_SET);
 
-            fread(tempLtVals, 1, retVal.w * retVal.h << 1, filePtr);
+            fread(tempLtVals, 1, retVal.w * retVal.h * 3, filePtr);
 
             retVal.board = (LogicTile*) malloc(
                 sizeof(LogicTile) * retVal.w * retVal.h
@@ -419,10 +445,10 @@ LogicBoard LoadLogicBoard(const char *path)
             for(int i = 0; i < (retVal.w * retVal.h); i++)
             {
                 retVal.board[i] = (LogicTile) {
-                    tempLtVals[i << 1],
-                    tempLtVals[(i << 1) + 1],
+                    tempLtVals[i * 3],
+                    tempLtVals[(i * 3) + 1],
                     0,
-                    0
+                    tempLtVals[(i * 3) + 2]
                 };
             }
 
@@ -468,16 +494,17 @@ void StoreLogicBoard(const char *path, LogicBoard lb)
     fseek(filePtr, 14, SEEK_SET);
     fwrite(&lb.h, 4, 1, filePtr);
 
-    tempLtVals = (int8_t*) malloc(lb.w * lb.h << 1);
+    tempLtVals = (int8_t*) malloc(lb.w * lb.h * 3);
 
     for(int i = 0; i < (lb.w * lb.h); i++)
     {
-        tempLtVals[i << 1] = lb.board[i].type;
-        tempLtVals[(i << 1) + 1] = lb.board[i].rotation;
+        tempLtVals[i * 3] = lb.board[i].type;
+        tempLtVals[(i * 3) + 1] = lb.board[i].rotation;
+        tempLtVals[(i * 3) + 2] = lb.board[i].prevPower;
     }
 
     fseek(filePtr, 18, SEEK_SET);
-    fwrite(tempLtVals, 1, lb.w * lb.h << 1, filePtr);
+    fwrite(tempLtVals, 1, lb.w * lb.h * 3, filePtr);
 
     free(tempLtVals);
 }
