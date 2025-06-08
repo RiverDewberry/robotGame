@@ -1,4 +1,5 @@
 #include "../include/main.h"
+#include "../include/menuHints.h"
 #include <raylib.h>
 #include <stdio.h>
 
@@ -260,6 +261,9 @@ int main(int argc, char **argv)
     {
         /* NOTE: LOGIC SECTION*/
 
+        //controls what hint is shown based on where the mouse is
+        int menuHintNum = 0;
+
         //gets dims of screen
         int screenWidth = GetScreenWidth();
         int screenHeight = GetScreenHeight();
@@ -275,6 +279,26 @@ int main(int argc, char **argv)
         if(boardMenu.scale < 1.0f)boardMenu.scale = 1.0f;
         if(boardMenu.scale > 4.0f)boardMenu.scale = 4.0f;
         boardMenu.scale *= 1.5;
+
+        //updates mouse over
+        for(int i = 0; i < boardMenu.elemNum; i++)
+            boardMenu.mouseOver[i] = CheckCollisionPointRec(
+                GetMousePosition(),
+                (Rectangle) {
+                    boardMenu.position.x +
+                    boardMenu.elemHitboxes[i].x * boardMenu.scale,
+                    boardMenu.position.y +
+                    boardMenu.elemHitboxes[i].y * boardMenu.scale,
+                    boardMenu.elemHitboxes[i].width * boardMenu.scale,
+                    boardMenu.elemHitboxes[i].height * boardMenu.scale
+                }
+            );
+
+        //update menu hints
+        for(int i = 0; i < 5; i++)
+            if(boardMenu.mouseOver[i])menuHintNum = i + 17;
+        for(int i = 7; i < 13; i++)
+            if(boardMenu.mouseOver[i])menuHintNum = i + 15;
 
         //handels when the mouse is pressed down
         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -725,6 +749,9 @@ int main(int argc, char **argv)
                         //updates the last circuit type that the mouse was over
                         boardMenu.clickTracker[5] = j * 10 + i;
 
+                        //updates menu hint num
+                        menuHintNum = i + 28 + j * 10;
+
                         //when the mouse is clicked, updates this click tracker
                         //to the current circuit type the mouse is over
                         if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -780,8 +807,7 @@ int main(int argc, char **argv)
 
         //if the menu is fully displayed
         if(
-            !boardMenu.clickTracker[2] &&
-            !boardMenu.clickTracker[4] &&
+            !(boardMenu.clickTracker[4] || boardMenu.clickTracker[2]) &&
             boardMenu.clickTracker[3]
         )
         {
@@ -803,6 +829,8 @@ int main(int argc, char **argv)
                     }
                 ))
                 {
+                    //updates hint
+                    menuHintNum = i + 1;
 
                     //sets the tracker when the relevant input is clicked
                     if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -864,7 +892,7 @@ int main(int argc, char **argv)
         }
 
         DrawText(
-            "this is some text",
+            menuHints[menuHintNum],
             2 * boardMenu.scale,
             2 * boardMenu.scale,
             7 * boardMenu.scale,
