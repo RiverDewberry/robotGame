@@ -1043,6 +1043,7 @@ int main(int argc, char **argv)
 
             //draws the marker of what type is selected
             if(selectedPos.x > -0.5f)
+            {
                 DrawTexturePro(
                     menuTexture,
                     (Rectangle) {101.0f, 10.0f, 10.0f, 10.0f},
@@ -1058,6 +1059,40 @@ int main(int argc, char **argv)
                     0.0f,
                     WHITE
                 );
+
+                int tempYOffset = (
+                    (((int) (selectedPos.x - 52.0f)) / 50) * 42
+                );
+
+                DrawTexturePro(
+                    menuTexture,
+                    (Rectangle) {
+                        52.0f + ((float)
+                            (((int) (selectedPos.x - 52.0f)) % 50)
+                        ),
+                        ((float) tempYOffset) + selectedPos.y,
+                        8.0f,
+                        8.0f,
+                    },
+                    (Rectangle) {
+                        boardMenu.position.x +
+                        (selectedPos.x + 4.0f) * boardMenu.scale,
+                        boardMenu.position.y +
+                        (selectedPos.y + 4.0f) * boardMenu.scale,
+                        8.0f * boardMenu.scale,
+                        8.0f * boardMenu.scale
+                    },
+                    (Vector2){
+                        4.0f * boardMenu.scale,
+                        4.0f * boardMenu.scale
+                    },
+                    90.0f * ((float) (
+                        boardMenu.clickTracker[1] ^ ((
+                        boardMenu.clickTracker[1] & 1) << 1))
+                    ),
+                    WHITE
+                );
+            }
         }
 
         //draws the power selection part of the menu
