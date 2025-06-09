@@ -1,7 +1,7 @@
 #ifndef STRUTILS_H
 #define STRUTILS_H
 
-//the path to the file that is executed
+//The path to the file that is executed.
 extern char *path;
 
 //added path to the start of inStr and returns a pointer to that new string
@@ -12,6 +12,5 @@ char *AddPath(const char *inStr);
 void AddPathReuse(const char *instr, char **outStr);
 
 //sets path to the dir that the executable file is in.
-// WARNING: this will change pathToExec
 void SetPathToDir(char *pathToExec);
 #endif

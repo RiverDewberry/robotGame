@@ -1,6 +1,7 @@
 #include "../include/strutils.h"
 #include <string.h>
 #include <stdlib.h>
+#include <raylib.h>
 
 char *path = NULL;
 
@@ -26,15 +27,13 @@ void AddPathReuse(const char *inStr, char **outStr)
 
 void SetPathToDir(char *pathToExec)
 {
-    path = pathToExec;
+    const char* temp = GetDirectoryPath(pathToExec);
 
-    //I know this is a bit cursed
-    for(int i = strlen(pathToExec) - 1; i-- > 0;)
-    {
-        if(path[i] == '/')
-        {
-           path[i] = 0;
-           return;
-        }
-    }
+    //mallocs new data for path
+    if(path != NULL)free(path);
+    path = (char*) malloc(sizeof(char) * strlen(temp) + 1);
+
+    for(int i = 0; i < strlen(temp); i++) path[i] = temp[i];
+    path[strlen(temp)] = 0;
+
 }

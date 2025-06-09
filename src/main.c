@@ -84,9 +84,9 @@ int main(int argc, char **argv)
     Texture2D menuTexture = LoadTexture(tempStr);
     AddPathReuse("/sprites/boardBackground.png", &tempStr);
     Texture2D backgroundTexture = LoadTexture(tempStr);
-    free(tempStr);
 
-    LogicBoard mainBoard = LoadLogicBoard("./boards/mainboard.bin");
+    AddPathReuse("/boards/mainboard.bin", &tempStr);
+    LogicBoard mainBoard = LoadLogicBoard(tempStr);
 
     if(mainBoard.w == 0) mainBoard = NewLogicBoard(25, 25);
 
@@ -453,7 +453,7 @@ int main(int argc, char **argv)
                 {
                     boardMenu.clickTracker[7] = 1;
                     boardMenu.clickTracker[10] = 0;
-                    StoreLogicBoard("./boards/mainboard.bin", mainBoard);
+                    StoreLogicBoard(tempStr, mainBoard);
                 }
 
                 //quits
@@ -1247,6 +1247,8 @@ int main(int argc, char **argv)
     UnloadTexture(backgroundTexture);
     FreeLogicBoard(&mainBoard);
     FreeLogicBoard(&mainCb.board);
+
+    free(tempStr);
 
     //does what it says
     CloseWindow();
