@@ -1,7 +1,9 @@
 #ifndef LOGIC_BOARD_H
 #define LOGIC_BOARD_H
+#include <raylib.h>
 #include <stdint.h>
 
+extern char logicBoardTexturesLoaded;
 
 // NOTE: STRUCTS
 
@@ -41,7 +43,6 @@ typedef struct LogicBoard {
     //a pointer to the board
     LogicTile* board;
 } LogicBoard;
-
 
 //the values found in the types portion of each LogicTile
 typedef enum {
@@ -185,7 +186,7 @@ void TickLogicBoard(LogicBoard* lb);
 void UpdatePowerLogicBoard(LogicBoard* lb);
 
 //displays the logic board onscreen
-void DisplayLogicBoard(LogicBoard lb);
+void DisplayLogicBoard(LogicBoard lb, Camera2D cam);
 
 //loads LogicBoard textures
 void LoadLogicBoardTextures();
