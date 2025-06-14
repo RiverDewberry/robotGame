@@ -17,6 +17,6 @@ ScreenState EditLogicBoard(char *lbPath);
 
 //allows the user to select a logic board, outputs path to selected logic board
 //to outPath
-ScreenState SelectLogicBoard(char *outPath);
+ScreenState SelectLogicBoard(char **outPath);
 
 #endif

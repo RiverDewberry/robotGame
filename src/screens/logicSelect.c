@@ -191,7 +191,7 @@ void ResizeBoard(LogicBoard *lb, int newWidth, int newHeight)
     return;
 }
 
-ScreenState SelectLogicBoard(char *outPath)
+ScreenState SelectLogicBoard(char **outPath)
 {
     int screenWidth = GetScreenWidth();
     int screenHeight = GetScreenHeight();
@@ -763,6 +763,20 @@ ScreenState SelectLogicBoard(char *outPath)
                     (float)(selectedBoard.h << 3)
                 };
             }
+        }
+
+        //sends outout to output var and returns from screen
+        if(selectButton.isSelected)
+        {
+            if((outPath != NULL)){
+
+                *outPath = malloc(
+                    sizeof(boardPaths.paths[fileList.elemSelected]) + 1
+                );
+
+                strcpy(*outPath, boardPaths.paths[fileList.elemSelected]);
+            }
+            return LEFTSCREEN;
         }
 
         BeginDrawing();//starts drawing
