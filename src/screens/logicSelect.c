@@ -651,9 +651,6 @@ ScreenState SelectLogicBoard(char **outPath)
 
             AddPathReuse(tempFileName, &filePathStr);
 
-            if(fileList.elemSelected != -1)
-                remove(boardPaths.paths[fileList.elemSelected]);
-
             StoreLogicBoard(
                 filePathStr,
                 selectedBoard
@@ -666,44 +663,8 @@ ScreenState SelectLogicBoard(char **outPath)
             AddPathReuse("/boards", &filePathStr);
             boardPaths = LoadDirectoryFiles(filePathStr);
             fileList.elemNums = boardPaths.count;
-
-            fileList.elemSelected = -1;
-
-            for(int i = 0; i < boardPaths.count; i++)
-            {
-                if(strcmp(
-                   nameInput.textOutput,
-                   GetFileNameWithoutExt(boardPaths.paths[i])
-                ) == 0)
-                {
-                    fileList.elemSelected = i;
-                    break;
-                }
-            }
-
-            if(fileList.elemSelected != -1)
-            {
-                fileList.firstElemShown = fileList.elemSelected;
-
-                if((fileList.elemNums > 2) && (fileList.firstElemShown != 0))
-                {
-                    fileList.firstElemShown--;
-                }
-            }
-
         } else if(!createBoardButton.isSelected)
             fileMade = 1;
-
-        //makes sure that list does not show elements after the bottom of the
-        //if there are enough elems to fill list
-        if(
-            (fileList.firstElemShown + fileList.elemsShown) >
-            fileList.elemNums
-        )
-            fileList.firstElemShown = fileList.elemNums - fileList.elemsShown;
-
-        if(fileList.firstElemShown < 0)fileList.firstElemShown = 0;
-
 
         //if the selected board changes
         if(loadedBoardNum != fileList.elemSelected)
@@ -764,6 +725,50 @@ ScreenState SelectLogicBoard(char **outPath)
                 };
             }
         }
+
+            for(int i = 0; i < boardPaths.count; i++)
+            {
+                if(strcmp(
+                    nameInput.textOutput,
+                    GetFileNameWithoutExt(boardPaths.paths[i])
+                ) == 0)
+                {
+                    fileList.elemSelected = i;
+                    break;
+                }
+            }
+
+            if(fileList.elemSelected != -1)
+            {
+                fileList.firstElemShown = fileList.elemSelected;
+
+                if((fileList.elemsShown > 2) && (fileList.firstElemShown != 0))
+                {
+                    fileList.firstElemShown--;
+                } else if(
+                    (fileList.elemSelected ==
+                    (fileList.firstElemShown + fileList.elemsShown)) &&
+                    (fileList.elemsShown != 1)
+                )
+                    fileList.firstElemShown--;
+            }
+
+            //makes sure that list does not show elements after the bottom of the
+            //if there are enough elems to fill list
+            if(
+                (fileList.firstElemShown + fileList.elemsShown) >
+                fileList.elemNums
+            )
+                fileList.firstElemShown = fileList.elemNums - fileList.elemsShown;
+
+            if(
+                (fileList.firstElemShown + fileList.elemsShown) >
+                fileList.elemNums
+            )
+                fileList.firstElemShown = fileList.elemNums - fileList.elemsShown;
+
+            if(fileList.firstElemShown < 0)fileList.firstElemShown = 0;
+
 
         //sends outout to output var and returns from screen
         if(selectButton.isSelected)
@@ -833,7 +838,11 @@ ScreenState SelectLogicBoard(char **outPath)
             uiScale,
             fileList.elemSelected == -1 ?
                 "Create new board" :
-                "Apply changes"
+                ((
+                    strcmp(
+                        nameInput.textOutput,
+                        GetFileNameWithoutExt(boardPaths.paths[fileList.elemSelected])) == 0
+                ) ? "Apply changes" : "Copy board")
         );
 
         DrawButton(
