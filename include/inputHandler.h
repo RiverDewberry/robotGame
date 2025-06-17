@@ -1,6 +1,6 @@
 #ifndef INPUT_HANDLER_H
 #define INPUT_HANDLER_H
-#include <raylib.h>
+#include "../libs/raylib.h"
 #include <stdint.h>
 #include <stddef.h>
 

@@ -1,7 +1,7 @@
 #include "../include/strutils.h"
 #include <string.h>
 #include <stdlib.h>
-#include <raylib.h>
+#include "../libs/raylib.h"
 
 char *path = NULL;
 

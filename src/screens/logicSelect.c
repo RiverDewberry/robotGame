@@ -1,8 +1,9 @@
 #include "../../include/logicBoard.h"
+#include "../../include/menuHints.h"
 #include "../../include/inputHandler.h"
 #include "../../include/strutils.h"
 #include "../../include/screens.h"
-#include <raylib.h>
+#include "../../libs/raylib.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -723,6 +724,7 @@ ScreenState SelectLogicBoard(char **outPath)
                     (float)(selectedBoard.w << 3),
                     (float)(selectedBoard.h << 3)
                 };
+                BoundDragTracker(&worldCamDrag);
             }
         }
 
@@ -808,6 +810,13 @@ ScreenState SelectLogicBoard(char **outPath)
             }
         }
 
+        Rectangle infoBox = {
+            88.0f * uiScale,
+            2.0f * uiScale,
+            10.0f * uiScale,
+            10.0f * uiScale
+        };
+
         BeginMode2D(worldCamera);//sets camera to worldCamera
         /* NOTE: WORLD DRAWING SECTION */
 
@@ -818,7 +827,15 @@ ScreenState SelectLogicBoard(char **outPath)
 
         DrawRectangleRec(menuArea, (Color) {0x26, 0x26, 0x28, 0xff});
 
-        DrawBox(2, 2, 96, 10, uiScale);
+        DrawBox(2, 2, 84, 10, uiScale);
+
+        DrawRectangleRec(
+            infoBox,
+            CheckCollisionPointRec(GetMousePosition(), infoBox) ?
+                (Color) {0xc6, 0xa1, 0x53, 0xff} :
+                (Color) {0x4e, 0x40, 0x28, 0xff}
+        );
+
         DrawBox(2, 14, 96, 49, uiScale);
         DrawBox(2, 65, 96, 13, uiScale);
         DrawBox(2, 80, 96, fileList.elemsShown * 12 + 1, uiScale);
@@ -832,6 +849,27 @@ ScreenState SelectLogicBoard(char **outPath)
                 (Color) {0xc6, 0xa1, 0x53, 0xff} :
                 (Color) {0x4e, 0x40, 0x28, 0xff}
         );
+
+        DrawText(
+            "?",
+            90.0f * uiScale,
+            2.0f * uiScale,
+            10.0f * uiScale,
+            CheckCollisionPointRec(GetMousePosition(), infoBox) ?
+                (Color) {0x4e, 0x40, 0x28, 0xff} :
+                (Color) {0xc6, 0xa1, 0x53, 0xff}
+        );
+
+        if(CheckCollisionPointRec(GetMousePosition(), infoBox))
+        {
+            DrawText(
+                selectionScreen,
+                105.0f * uiScale,
+                2.0f * uiScale,
+                10.0f * uiScale,
+                BLACK
+            );
+        }
 
         DrawButton(
             createBoardButton,

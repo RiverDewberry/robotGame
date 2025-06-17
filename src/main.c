@@ -1,7 +1,7 @@
 #include "../include/screens.h"
 #include "../include/strutils.h"
 #include <stdio.h>
-#include <raylib.h>
+#include "../libs/raylib.h"
 
 int main(int argc, char **argv)
 {

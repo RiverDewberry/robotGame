@@ -1,6 +1,6 @@
 #include "../include/logicBoard.h"
 #include "../include/strutils.h"
-#include <raylib.h>
+#include "../libs/raylib.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>

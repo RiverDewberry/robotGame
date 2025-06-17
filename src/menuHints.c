@@ -84,3 +84,14 @@ char *menuHints[] = {
     "Select multi-output wire (right and top)",
     "Select multi-output wire (full)"
 };
+
+char *selectionScreen = {
+    "<- \n"
+    "<- \n"
+    "<- \n"
+    "<- \n"
+    "<- \n"
+    "<- \n"
+    "<- \n"
+    "<- \n"
+};

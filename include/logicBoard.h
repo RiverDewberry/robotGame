@@ -1,6 +1,6 @@
 #ifndef LOGIC_BOARD_H
 #define LOGIC_BOARD_H
-#include <raylib.h>
+#include "../libs/raylib.h"
 #include <stdint.h>
 
 extern char logicBoardTexturesLoaded;

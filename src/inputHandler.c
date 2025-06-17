@@ -1,5 +1,5 @@
 #include "../include/inputHandler.h"
-#include <raylib.h>
+#include "../libs/raylib.h"
 
 void UpdateDragTracker(DragTracker *dt)
 {

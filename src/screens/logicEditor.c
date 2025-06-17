@@ -5,8 +5,7 @@
 #include "../../include/screens.h"
 #include <stdlib.h>
 #include <math.h>
-#include <raylib.h>
-#include <raylib.h>
+#include "../../libs/raylib.h"
 #include <stdio.h>
 
 //a struct created to manage the state of the menu
