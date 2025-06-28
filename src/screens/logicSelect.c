@@ -166,7 +166,6 @@ void SwapBoard(char* newBoardPath, LogicBoard *lb)
     UpdatePowerLogicBoard(lb);
 }
 
-//returns 1 if lb changed
 void ResizeBoard(LogicBoard *lb, int newWidth, int newHeight)
 {
     LogicBoard temp = NewLogicBoard(newWidth, newHeight);
@@ -865,7 +864,7 @@ ScreenState SelectLogicBoard(char **outPath)
             DrawText(
                 selectionScreen,
                 105.0f * uiScale,
-                2.0f * uiScale,
+                14.0f * uiScale,
                 10.0f * uiScale,
                 BLACK
             );

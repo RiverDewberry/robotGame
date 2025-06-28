@@ -86,12 +86,15 @@ char *menuHints[] = {
 };
 
 char *selectionScreen = {
-    "<- \n"
-    "<- \n"
-    "<- \n"
-    "<- \n"
-    "<- \n"
-    "<- \n"
-    "<- \n"
-    "<- \n"
+    "<- save board to file with\n"
+    "entered name. If a board\n"
+    "is selected, it can be copyed\n"
+    "by renaming it\n"
+    "\n"
+    "<- Once file is clicked on, it can\n"
+    "be edited, deleted, or selected.\n"
+    "\n"
+    "<- Shows file list. Files in this\n"
+    "list can be selected by clicking\n"
+    "in them\n"
 };
