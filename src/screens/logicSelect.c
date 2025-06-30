@@ -861,12 +861,105 @@ ScreenState SelectLogicBoard(char **outPath)
 
         if(CheckCollisionPointRec(GetMousePosition(), infoBox))
         {
+            //this may seem very cursed (because it is)
+            //but it is needed to do this in a cursed way
+
+            float hintX = 102.0f;
+            float hintY = 12.0f;
+            float hintW = 158.0f;
+            float hintH = 112.0f;
+
+            int xVals[] = {
+                hintX * uiScale,
+                (1.0f + hintX) * uiScale,
+                (2.0f + hintX) * uiScale,
+                ((6.0f + hintX + hintW) * uiScale),
+                ((7.0f + hintX + hintW) * uiScale),
+                ((8.0f + hintX + hintW) * uiScale) 
+            };
+
+            int yVals[] = {
+                hintY * uiScale,
+                (1.0f + hintY) * uiScale,
+                (2.0f + hintY) * uiScale,
+                ((6.0f + hintY + hintH) * uiScale),
+                ((7.0f + hintY + hintH) * uiScale),
+                ((8.0f + hintY + hintH) * uiScale)
+            };
+
+            DrawRectangle(
+                xVals[2], yVals[2], xVals[3] - xVals[2], yVals[3] - yVals[2],
+                (Color) {0x78, 0x79, 0x7d, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[2], yVals[1], xVals[3] - xVals[2], yVals[2] - yVals[1],
+                (Color) {0x1b, 0x1b, 0x1d, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[1], yVals[2], xVals[2] - xVals[1], yVals[3] - yVals[2],
+                (Color) {0x1b, 0x1b, 0x1d, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[2], yVals[3], xVals[3] - xVals[2], yVals[4] - yVals[3],
+                (Color) {0x3c, 0x3d, 0x3f, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[3], yVals[2], xVals[4] - xVals[3], yVals[3] - yVals[2],
+                (Color) {0x3c, 0x3d, 0x3f, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[2], yVals[0], xVals[3] - xVals[2], yVals[1] - yVals[0],
+                (Color) {0x26, 0x26, 0x28, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[0], yVals[2], xVals[1] - xVals[0], yVals[3] - yVals[2],
+                (Color) {0x26, 0x26, 0x28, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[2], yVals[4], xVals[3] - xVals[2], yVals[5] - yVals[4],
+                (Color) {0x26, 0x26, 0x28, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[4], yVals[2], xVals[5] - xVals[4], yVals[3] - yVals[2],
+                (Color) {0x26, 0x26, 0x28, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[0], yVals[0], xVals[2] - xVals[0], yVals[2] - yVals[0],
+                (Color) {0x26, 0x26, 0x28, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[3], yVals[0], xVals[5] - xVals[3], yVals[2] - yVals[0],
+                (Color) {0x26, 0x26, 0x28, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[0], yVals[3], xVals[2] - xVals[0], yVals[5] - yVals[3],
+                (Color) {0x26, 0x26, 0x28, 0xff}
+            );
+
+            DrawRectangle(
+                xVals[3], yVals[3], xVals[5] - xVals[3], yVals[5] - yVals[3],
+                (Color) {0x26, 0x26, 0x28, 0xff}
+            );
+
             DrawText(
                 selectionScreen,
                 105.0f * uiScale,
                 14.0f * uiScale,
                 10.0f * uiScale,
-                BLACK
+            IsMouseButtonDown(MOUSE_BUTTON_LEFT) ?
+                (Color) {0xc6, 0xa1, 0x53, 0xff} :
+                (Color) {0x4e, 0x40, 0x28, 0xff}
             );
         }
 
