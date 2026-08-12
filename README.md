@@ -1,2 +1,2 @@
 # robotGame
-progress will resume when I have more time
+progress will resume when I have more time (likely never)
